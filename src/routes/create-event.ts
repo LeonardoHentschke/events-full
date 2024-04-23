@@ -14,13 +14,19 @@ export async function createEvent(app: FastifyInstance) {
                 tags: ['eventos'],
                 body: z.object({
                     title: z.string().min(4),
-                    details: z.string().nullable(),
+                    details: z.string(),
                     maximumAttendees: z.number().int().positive().nullable(),
                     dateTime: z.string().datetime()
                 }),
                 response: {
                     201: z.object({
-                        eventId: z.string().uuid(),
+                        event: z.object({
+                            id: z.string().uuid(),
+                            title: z.string(),
+                            details: z.string(),
+                            maximumAttendees: z.number().int().positive().nullable(),
+                            dateTime: z.string().datetime()
+                        })
                     })
                 },
             },
@@ -54,6 +60,6 @@ export async function createEvent(app: FastifyInstance) {
                 },
             })
 
-            return reply.status(201).send({eventId: event.id})
+            return reply.status(201).send({event})
         })
 }
