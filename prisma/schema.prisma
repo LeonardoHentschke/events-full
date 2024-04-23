@@ -19,9 +19,9 @@ model User {
 model Event {
   id              String         @id @default(uuid())
   title           String
-  description     String
+  details         String
   slug            String         @unique
-  maxParticipants Int?           @map("max_participants")
+  maximumAttendees Int?           @map("maximum_attendees")
   dateTime        DateTime
   participants    Subscription[]
   checkIns        CheckIn[]
