@@ -31,13 +31,7 @@ export async function createEvent(app: FastifyInstance) {
                 },
             },
         }, async (request, reply) => {
-            const {
-                title,
-                details,
-                maximumAttendees,
-                dateTime
-            } = request.body
-
+            const {title, details, maximumAttendees, dateTime} = request.body
             const slug = generateSlug(title)
 
             const eventWithSameSlug = await prisma.event.findUnique({
@@ -60,6 +54,6 @@ export async function createEvent(app: FastifyInstance) {
                 },
             })
 
-            return reply.status(201).send({event})
+            return reply.status(201).send(event)
         })
 }

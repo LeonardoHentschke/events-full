@@ -7,6 +7,10 @@ import fastifyCors from "@fastify/cors";
 import { serializerCompiler, validatorCompiler, jsonSchemaTransform, ZodTypeProvider } from 'fastify-type-provider-zod'
 import { createEvent } from "./routes/create-event";
 import { errorHandler } from "./error-handler";
+import {createUser} from "./routes/create-user";
+import {subscribeUserEvent} from "./routes/subscribe-user-event";
+import {listEvents} from "./routes/list-event";
+import {listUsers} from "./routes/list-user";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -35,6 +39,10 @@ app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
 app.register(createEvent)
+app.register(createUser)
+app.register(subscribeUserEvent)
+app.register(listEvents)
+app.register(listUsers)
 
 app.setErrorHandler(errorHandler)
 
