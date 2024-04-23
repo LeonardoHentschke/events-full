@@ -1,8 +1,12 @@
-import { FastifyInstance } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { z } from "zod";
-import { prisma } from "../lib/prisma";
-import { BadRequest } from "./_errors/bad-request";
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import {ZodTypeProvider} from "fastify-type-provider-zod";
+import { z } from 'zod';
+import { PrismaClient } from '@prisma/client';
+import {BadRequest} from "./_errors/bad-request";
+
+import {sendEmail} from "../utils/sendEmail"
+
+const prisma = new PrismaClient();
 
 export async function subscribeUserEvent(app: FastifyInstance) {
     app
@@ -21,7 +25,8 @@ export async function subscribeUserEvent(app: FastifyInstance) {
                     }),
                 },
             },
-        }, async (request, reply) => {
+        }, async (request: FastifyRequest, reply: FastifyReply) => {
+            // @ts-ignore
             const { userId, eventId } = request.body;
 
             const user = await prisma.user.findUnique({
@@ -62,6 +67,23 @@ export async function subscribeUserEvent(app: FastifyInstance) {
                     eventId: eventId,
                 },
             });
+
+            // Enviar e-mail de confirmação
+            try {
+                await sendEmail({
+                    to: user.email,
+                    subject: 'Confirmação de Inscrição',
+                    html: `
+                        <p>Olá ${user.name},</p>
+                        <p>Você foi inscrito no evento ${event.title} que acontecerá em ${event.dateTime}.</p>
+                        <p>Atenciosamente,</p>
+                        <p>Events Full</p>
+                    `,
+                });
+            } catch (error) {
+                // Se ocorrer um erro ao enviar o e-mail, trate conforme necessário
+                console.error('Erro ao enviar e-mail de confirmação:', error);
+            }
 
             return reply.status(201).send({ message: 'Usuário inscrito no evento com sucesso.' });
         });
