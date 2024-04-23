@@ -14,21 +14,22 @@ export async function getEvent(app: FastifyInstance) {
                 params: z.object({
                     eventId: z.string().uuid(),
                 }),
-                response: {
-                    200: z.object({
-                        id: z.string().uuid(),
-                        title: z.string(),
-                        details: z.string(),
-                        slug: z.string(),
-                        maximumAttendees: z.number().int().positive().nullable(),
-                        dateTime: z.string().datetime(),
-                        participants: z.array(z.object({
-                            id: z.string().uuid(),
-                            name: z.string(),
-                            email: z.string().email(),
-                        })),
-                    }),
-                },
+                // response: {
+                //     200: z.object({
+                //         id: z.string().uuid(),
+                //         title: z.string(),
+                //         details: z.string(),
+                //         slug: z.string(),
+                //         maximumAttendees: z.number().int().positive().nullable(),
+                //         dateTime: z.string().datetime(),
+                //         participants: z.array(z.object({
+                //             id: z.string().uuid(),
+                //             name: z.string(),
+                //             email: z.string().email(),
+                //             password: z.string(),
+                //         })),
+                //     }),
+                // },
             },
         }, async (request: FastifyRequest, reply: FastifyReply) => {
 
@@ -51,7 +52,7 @@ export async function getEvent(app: FastifyInstance) {
             if (!event) {
                 throw new BadRequest('Evento não encontrado.');
             }
-
+            console.dir(event, {depth: null})
             return reply.status(200).send(event);
         });
 }

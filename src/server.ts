@@ -12,6 +12,10 @@ import {subscribeUserEvent} from "./routes/subscribe-user-event";
 import {listEvents} from "./routes/list-event";
 import {listUsers} from "./routes/list-user";
 import {getEvent} from "./routes/get-event";
+import {getUserSubscription} from "./routes/get-user-subscription";
+import {deleteUserSubscription} from "./routes/delete-user-subscription";
+import {checkIn} from "./routes/check-in";
+import {listCheckIn} from "./routes/list-check-in";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -45,6 +49,10 @@ app.register(listEvents)
 app.register(listUsers)
 app.register(subscribeUserEvent)
 app.register(getEvent)
+app.register(getUserSubscription)
+app.register(deleteUserSubscription)
+app.register(checkIn)
+app.register(listCheckIn)
 
 app.setErrorHandler(errorHandler)
 
