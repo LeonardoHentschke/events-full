@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,45 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id          String        @id @default(uuid())
-  nome        String
-  email       String     @unique
-  senha       String
-  inscricoes  Inscricao[]
-  presencas   Presenca[]
-}
-
-model Evento {
+model User {
   id            String         @id @default(uuid())
-  nome          String
-  descricao     String
-  dataHora      DateTime
-  participantes Inscricao[]
-  presencas     Presenca[]
+  name          String
+  email         String         @unique
+  password      String
+  subscriptions Subscription[]
+  checkIns      CheckIn[]
 }
 
-model Inscricao {
-  id        String       @id @default(uuid())
-  usuario   Usuario   @relation(fields: [usuarioId], references: [id])
-  evento    Evento    @relation(fields: [eventoId], references: [id])
-  usuarioId String
-  eventoId  String
+model Event {
+  id              String         @id @default(uuid())
+  title           String
+  description     String
+  slug            String         @unique
+  maxParticipants Int?           @map("max_participants")
+  dateTime        DateTime
+  participants    Subscription[]
+  checkIns        CheckIn[]
 }
 
-model Presenca {
-  id             String        @id @default(uuid())
-  evento         Evento     @relation(fields: [eventoId], references: [id])
-  participante   Usuario    @relation(fields: [participanteId], references: [id])
-  eventoId  String
-participanteId String
-  dataHora       DateTime
+model Subscription {
+  id      String @id @default(uuid())
+  user    User   @relation(fields: [userId], references: [id])
+  event   Event  @relation(fields: [eventId], references: [id])
+  userId  String
+  eventId String
+}
+
+model CheckIn {
+  id            String   @id @default(uuid())
+  event         Event    @relation(fields: [eventId], references: [id])
+  participant   User     @relation(fields: [participantId], references: [id])
+  eventId       String
+  participantId String
+  dateTime      DateTime
 }
 
 model Log {
-  id        String      @id @default(uuid())
-  endpoint  String
-  metodo    String
-  dataHora  DateTime @default(now())
+  id       String   @id @default(uuid())
+  endpoint String
+  method   String
+  dateTime DateTime @default(now())
 }
-
