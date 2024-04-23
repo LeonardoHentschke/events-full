@@ -17,14 +17,14 @@ model User {
 }
 
 model Event {
-  id              String         @id @default(uuid())
-  title           String
-  details         String
-  slug            String         @unique
+  id               String         @id @default(uuid())
+  title            String
+  details          String
+  slug             String         @unique
   maximumAttendees Int?           @map("maximum_attendees")
-  dateTime        DateTime
-  participants    Subscription[]
-  checkIns        CheckIn[]
+  dateTime         DateTime
+  participants     Subscription[]
+  checkIns         CheckIn[]
 }
 
 model Subscription {
