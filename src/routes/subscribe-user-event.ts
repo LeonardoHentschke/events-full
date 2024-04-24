@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { PrismaClient } from '@prisma/client';
 import {BadRequest} from "./_errors/bad-request";
 
-import {sendEmail} from "../utils/sendEmail"
+import {sendEmail} from "../utils/send-email"
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ export async function subscribeUserEvent(app: FastifyInstance) {
         .post('/subscribe', {
             schema: {
                 summary: 'Inscrever usuário em evento',
-                tags: ['inscrições'],
+                tags: ['Inscrição'],
                 body: z.object({
                     userId: z.string().uuid(),
                     eventId: z.string().uuid(),

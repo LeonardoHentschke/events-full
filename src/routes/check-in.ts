@@ -10,7 +10,7 @@ export async function checkIn(app: FastifyInstance) {
         .post('/checkin', {
             schema: {
                 summary: 'Registrar presença em evento',
-                tags: ['check-in'],
+                tags: ['Check-In'],
                 body: z.object({
                     eventId: z.string().uuid(),
                     userId: z.string().uuid(),

@@ -10,7 +10,7 @@ export async function getUserSubscription(app: FastifyInstance) {
         .get('/subscriptions/:userId', {
             schema: {
                 summary: 'Consultar inscrições de um usuário',
-                tags: ['inscrições'],
+                tags: ['Inscrição'],
                 params: z.object({
                     userId: z.string().uuid(),
                 }),

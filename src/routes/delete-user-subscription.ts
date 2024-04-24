@@ -10,7 +10,7 @@ export async function deleteUserSubscription(app: FastifyInstance) {
         .delete('/subscription', {
             schema: {
                 summary: 'Cancelar inscrição de usuário em evento',
-                tags: ['inscrições'],
+                tags: ['Inscrição'],
                 body: z.object({
                     userId: z.string().uuid(),
                     eventId: z.string().uuid(),

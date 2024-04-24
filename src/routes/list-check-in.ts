@@ -7,10 +7,10 @@ import {BadRequest} from "./_errors/bad-request";
 export async function listCheckIn(app: FastifyInstance) {
     app
         .withTypeProvider<ZodTypeProvider>()
-        .get('/events/:eventId/checkins', {
+        .get('/:eventId/checkins', {
             schema: {
                 summary: 'Listar check-ins em um evento',
-                tags: ['check-in'],
+                tags: ['Check-In'],
                 params: z.object({
                     eventId: z.string().uuid(),
                 }),

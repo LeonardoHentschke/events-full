@@ -10,7 +10,7 @@ export async function getEvent(app: FastifyInstance) {
         .get('/events/:eventId', {
             schema: {
                 summary: 'Obter evento com especifico',
-                tags: ['eventos'],
+                tags: ['Evento'],
                 params: z.object({
                     eventId: z.string().uuid(),
                 }),
@@ -43,7 +43,13 @@ export async function getEvent(app: FastifyInstance) {
                 include: {
                     participants: {
                         select: {
-                            user: true
+                            user: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    email: true,
+                                },
+                            },
                         },
                     },
                 },

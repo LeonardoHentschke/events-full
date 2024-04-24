@@ -10,7 +10,7 @@ export async function listUsers(app: FastifyInstance) {
         .get('/users', {
             schema: {
                 summary: 'Listar usuários',
-                tags: ['user'],
+                tags: ['Usuário'],
                 response: {
                     200: z.array(
                         z.object({
