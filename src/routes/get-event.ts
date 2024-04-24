@@ -58,7 +58,7 @@ export async function getEvent(app: FastifyInstance) {
             if (!event) {
                 throw new BadRequest('Evento não encontrado.');
             }
-            console.dir(event, {depth: null})
+
             return reply.status(200).send(event);
         });
 }
