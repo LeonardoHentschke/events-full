@@ -1,7 +1,7 @@
 import {FastifyInstance, FastifyRequest, FastifyReply} from 'fastify';
 import {z} from 'zod';
 
-import {sendEmailService} from '../../utils/send-email';
+import {sendEmailService} from '../utils/send-email';
 import {ZodTypeProvider} from "fastify-type-provider-zod";
 
 export async function sendEmail(app: FastifyInstance) {

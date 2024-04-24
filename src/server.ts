@@ -21,7 +21,7 @@ import {checkIn} from "./routes/checkins/check-in";
 import {listCheckIn} from "./routes/checkins/list-check-in";
 import {login} from "./routes/login";
 import {saveLog} from "./utils/save-log";
-import {sendEmail} from "./routes/subscription/send-email";
+import {sendEmail} from "./routes/send-email";
 import {editUser} from "./routes/user/edit-user";
 import {deleteUser} from "./routes/user/delete-user";
 import {editEvent} from "./routes/event/edit-event";
