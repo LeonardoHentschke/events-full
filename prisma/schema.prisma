@@ -45,8 +45,11 @@ model CheckIn {
 }
 
 model Log {
-  id       String   @id @default(uuid())
-  endpoint String
-  method   String
-  dateTime DateTime @default(now())
+  id             String     @id @default(uuid())
+  endpoint       String
+  method         String
+  params         String?
+  body           String?
+  authentication String?
+  dateTime       DateTime   @default(now())
 }

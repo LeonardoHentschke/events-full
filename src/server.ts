@@ -1,4 +1,4 @@
-import fastify, {FastifyError, FastifyReply, FastifyRequest} from "fastify";
+import fastify, {FastifyError, FastifyReply, FastifyRequest, HookHandlerDoneFunction} from "fastify";
 
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUI from "@fastify/swagger-ui";
@@ -20,6 +20,7 @@ import {deleteUserSubscription} from "./routes/delete-user-subscription";
 import {checkIn} from "./routes/check-in";
 import {listCheckIn} from "./routes/list-check-in";
 import {login} from "./routes/login";
+import {saveLog} from "./utils/save-log";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -64,6 +65,20 @@ app.register(login)
 app.setErrorHandler(errorHandler)
 
 app.after(() => {
+    app.addHook('onRequest', (request: FastifyRequest, reply: FastifyReply, done: HookHandlerDoneFunction) => {
+        const log = {
+            endpoint: request.url,
+            method: request.method,
+            params: JSON.stringify(request.params),
+            body: JSON.stringify(request.body),
+            authentication: request.headers.authorization || 'No authentication provided',
+        };
+
+        saveLog(log).then(r => console.log('Request salvo'));
+        done()
+    })
+
+
     app.addHook('onRequest', app.basicAuth)
 })
 
