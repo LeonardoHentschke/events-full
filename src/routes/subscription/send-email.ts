@@ -3,8 +3,6 @@ import {z} from 'zod';
 
 import {sendEmailService} from '../../utils/send-email';
 import {ZodTypeProvider} from "fastify-type-provider-zod";
-import {prisma} from "../../lib/prisma";
-import {BadRequest} from "../_errors/bad-request";
 
 export async function sendEmail(app: FastifyInstance) {
     app
