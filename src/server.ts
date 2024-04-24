@@ -1,8 +1,11 @@
-import fastify from "fastify";
+import fastify, {FastifyError, FastifyReply, FastifyRequest} from "fastify";
 
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUI from "@fastify/swagger-ui";
 import fastifyCors from "@fastify/cors";
+
+import fastifyBasicAuth from "@fastify/basic-auth";
+import {validate, authenticate} from "./utils/validate";
 
 import {serializerCompiler, validatorCompiler, jsonSchemaTransform, ZodTypeProvider} from 'fastify-type-provider-zod'
 import {createEvent} from "./routes/create-event";
@@ -44,6 +47,8 @@ app.register(fastifySwaggerUI, {
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+app.register(fastifyBasicAuth, { validate, authenticate })
+
 app.register(createEvent)
 app.register(createUser)
 app.register(listEvents)
@@ -57,6 +62,18 @@ app.register(listCheckIn)
 app.register(login)
 
 app.setErrorHandler(errorHandler)
+
+app.after(() => {
+    app.addHook('onRequest', app.basicAuth)
+})
+
+app.setErrorHandler(function (err: FastifyError, req: FastifyRequest, reply: FastifyReply) {
+    if (err.statusCode === 401) {
+        reply.code(401).send({ message: 'Unauthorized' })
+        return
+    }
+    reply.send(err)
+})
 
 app.listen({port: 3333, host: '0.0.0.0'}).then(() => {
     console.log('HTTP server running!')
