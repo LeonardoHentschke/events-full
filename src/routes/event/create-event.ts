@@ -1,9 +1,9 @@
 import {FastifyInstance} from "fastify"
 import {ZodTypeProvider} from "fastify-type-provider-zod"
 import {z} from "zod"
-import {prisma} from "../lib/prisma"
-import {generateSlug} from "../utils/generate-slug"
-import {BadRequest} from "./_errors/bad-request"
+import {prisma} from "../../lib/prisma"
+import {generateSlug} from "../../utils/generate-slug"
+import {BadRequest} from "../_errors/bad-request"
 
 export async function createEvent(app: FastifyInstance) {
     app
@@ -18,17 +18,6 @@ export async function createEvent(app: FastifyInstance) {
                     maximumAttendees: z.number().int().positive().nullable(),
                     dateTime: z.string().datetime()
                 }),
-                response: {
-                    201: z.object({
-                        event: z.object({
-                            id: z.string().uuid(),
-                            title: z.string(),
-                            details: z.string(),
-                            maximumAttendees: z.number().int().positive().nullable(),
-                            dateTime: z.string().datetime()
-                        })
-                    })
-                },
             },
         }, async (request, reply) => {
             const {title, details, maximumAttendees, dateTime} = request.body

@@ -8,19 +8,24 @@ import fastifyBasicAuth from "@fastify/basic-auth";
 import {validate, authenticate} from "./utils/validate";
 
 import {serializerCompiler, validatorCompiler, jsonSchemaTransform, ZodTypeProvider} from 'fastify-type-provider-zod'
-import {createEvent} from "./routes/create-event";
+import {createEvent} from "./routes/event/create-event";
 import {errorHandler} from "./error-handler";
-import {createUser} from "./routes/create-user";
-import {subscribeUserEvent} from "./routes/subscribe-user-event";
-import {listEvents} from "./routes/list-event";
-import {listUsers} from "./routes/list-user";
-import {getEvent} from "./routes/get-event";
-import {getUserSubscription} from "./routes/get-user-subscription";
-import {deleteUserSubscription} from "./routes/delete-user-subscription";
-import {checkIn} from "./routes/check-in";
-import {listCheckIn} from "./routes/list-check-in";
+import {createUser} from "./routes/user/create-user";
+import {subscribeUserEvent} from "./routes/subscription/subscribe-user-event";
+import {listEvents} from "./routes/event/list-event";
+import {listUsers} from "./routes/user/list-user";
+import {getEvent} from "./routes/event/get-event";
+import {getUserSubscription} from "./routes/subscription/get-user-subscription";
+import {deleteUserSubscription} from "./routes/subscription/delete-user-subscription";
+import {checkIn} from "./routes/checkins/check-in";
+import {listCheckIn} from "./routes/checkins/list-check-in";
 import {login} from "./routes/login";
 import {saveLog} from "./utils/save-log";
+import {sendEmail} from "./routes/subscription/send-email";
+import {editUser} from "./routes/user/edit-user";
+import {deleteUser} from "./routes/user/delete-user";
+import {editEvent} from "./routes/event/edit-event";
+import {deleteEvent} from "./routes/event/delete-event";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -51,16 +56,23 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(fastifyBasicAuth, { validate, authenticate })
 
 app.register(createEvent)
-app.register(createUser)
 app.register(listEvents)
-app.register(listUsers)
-app.register(subscribeUserEvent)
+app.register(editEvent)
 app.register(getEvent)
+app.register(deleteEvent)
+
+app.register(createUser)
+app.register(listUsers)
+app.register(editUser)
+app.register(deleteUser)
+
+app.register(subscribeUserEvent)
 app.register(getUserSubscription)
 app.register(deleteUserSubscription)
 app.register(checkIn)
 app.register(listCheckIn)
 app.register(login)
+app.register(sendEmail)
 
 app.setErrorHandler(errorHandler)
 
@@ -77,7 +89,6 @@ app.after(() => {
         saveLog(log).then(r => console.log('Request salvo'));
         done()
     })
-
 
     app.addHook('onRequest', app.basicAuth)
 })

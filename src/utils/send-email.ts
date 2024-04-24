@@ -22,13 +22,13 @@ interface EmailOptions {
     html: string;
 }
 
-export async function sendEmail(options: EmailOptions) {
+export async function sendEmailService(options: EmailOptions) {
     try {
         await transporter.sendMail({
             from: emailUser,
             ...options,
         });
-        console.log('E-mail enviado com sucesso:', options.subject);
+
     } catch (error) {
         console.error('Erro ao enviar e-mail:', error);
         throw new Error('Erro ao enviar e-mail.');

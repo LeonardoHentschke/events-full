@@ -1,12 +1,10 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import {FastifyInstance, FastifyRequest, FastifyReply} from 'fastify';
 import {ZodTypeProvider} from "fastify-type-provider-zod";
-import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
-import {BadRequest} from "./_errors/bad-request";
+import {z} from 'zod';
+import {prisma} from "../../lib/prisma";
+import {BadRequest} from "../_errors/bad-request";
 
-import {sendEmail} from "../utils/send-email"
-
-const prisma = new PrismaClient();
+import {sendEmailService} from "../../utils/send-email"
 
 export async function subscribeUserEvent(app: FastifyInstance) {
     app
@@ -27,7 +25,7 @@ export async function subscribeUserEvent(app: FastifyInstance) {
             },
         }, async (request: FastifyRequest, reply: FastifyReply) => {
             // @ts-ignore
-            const { userId, eventId } = request.body;
+            const {userId, eventId} = request.body;
 
             const user = await prisma.user.findUnique({
                 where: {
@@ -60,7 +58,6 @@ export async function subscribeUserEvent(app: FastifyInstance) {
                 throw new BadRequest('O usuário já está inscrito neste evento.');
             }
 
-            // Inscrever o usuário no evento
             await prisma.subscription.create({
                 data: {
                     userId: userId,
@@ -70,21 +67,31 @@ export async function subscribeUserEvent(app: FastifyInstance) {
 
             // Enviar e-mail de confirmação
             try {
-                await sendEmail({
+                const formattedDateTime = dateTimeFormat.format(new Date(event.dateTime));
+                await sendEmailService({
                     to: user.email,
-                    subject: 'Confirmação de Inscrição',
+                    subject: `Confirmação de Inscrição ${event.title} - Events Full`,
                     html: `
                         <p>Olá ${user.name},</p>
-                        <p>Você foi inscrito no evento ${event.title} que acontecerá em ${event.dateTime}.</p>
+                        <p>Você foi inscrito no evento ${event.title} que acontecerá em ${formattedDateTime}.</p>
                         <p>Atenciosamente,</p>
                         <p>Events Full</p>
                     `,
                 });
             } catch (error) {
-                // Se ocorrer um erro ao enviar o e-mail, trate conforme necessário
                 console.error('Erro ao enviar e-mail de confirmação:', error);
             }
 
-            return reply.status(201).send({ message: 'Usuário inscrito no evento com sucesso.' });
+            return reply.status(201).send({message: 'Usuário inscrito no evento com sucesso.'});
         });
 }
+
+const dateTimeFormat = new Intl.DateTimeFormat('pt-BR', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    timeZone: 'America/Sao_Paulo'
+});
